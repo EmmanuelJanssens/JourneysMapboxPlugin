@@ -1,5 +1,5 @@
 {
-  "name": "capacitor-mapbox",
+  "name": "journeys-capacitor-mapbox",
   "version": "0.0.1",
   "description": "Display map for journeys app",
   "main": "dist/plugin.cjs.js",
@@ -11,7 +11,7 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "CapacitorMapbox.podspec"
+    "JourneysCapacitorMapbox.podspec"
   ],
   "author": "Emmanuel",
   "license": "MIT",
@@ -51,7 +51,6 @@
     "@ionic/eslint-config": "^0.3.0",
     "@ionic/prettier-config": "^1.0.1",
     "@ionic/swiftlint-config": "^1.1.2",
-    "eslint": "^7.11.0",
     "prettier": "~2.3.0",
     "prettier-plugin-java": "~1.0.2",
     "rimraf": "^3.0.2",

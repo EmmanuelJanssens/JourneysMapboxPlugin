@@ -1,0 +1,71 @@
+import { WebPlugin } from '@capacitor/core';
+import mapboxgl from 'mapbox-gl';
+
+import type { JourneysMapPlugin } from './definitions';
+
+export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
+  map: mapboxgl.Map | undefined;
+
+  createMap(
+    options: mapboxgl.MapboxOptions,
+    accessToken: string,
+  ): mapboxgl.Map {
+    mapboxgl.accessToken = accessToken;
+    this.map = new mapboxgl.Map(options);
+    return this.map;
+  }
+
+  destroyMap(map: mapboxgl.Map): void {
+    map.remove();
+  }
+
+  getMap(): mapboxgl.Map {
+    return this.map!;
+  }
+
+  addSource(sourceid: string, data: any): mapboxgl.Map {
+    return this.map?.addSource(sourceid, data)!;
+  }
+  getSource(sourceid: string): mapboxgl.AnySourceImpl {
+    return this.map?.getSource(sourceid)!;
+  }
+  clearSource(id: string): mapboxgl.Map {
+    return this.map?.removeSource(id)!;
+  }
+
+  addLayer(data: mapboxgl.AnyLayer): mapboxgl.Map {
+    return this.map?.addLayer(data)!;
+  }
+  getLayer(layerid: string): mapboxgl.AnyLayer {
+    return this.map?.getLayer(layerid)!;
+  }
+  clearLayer(id: string): mapboxgl.Map {
+    return this.map?.removeLayer(id)!;
+  }
+
+  addMarker(marker: mapboxgl.Marker): mapboxgl.Marker {
+    return marker.addTo(this.map!)!;
+  }
+  removeMarker(marker: mapboxgl.Marker): mapboxgl.Marker {
+    return marker.remove();
+  }
+}
+
+import mapboxgl from 'mapbox-gl';
+
+export interface JourneysMapPlugin {
+  createMap(options: mapboxgl.MapboxOptions, accessToken: string): mapboxgl.Map;
+  destroyMap(map: mapboxgl.Map): void;
+  getMap(): mapboxgl.Map;
+
+  addSource(sourceid: string, data: any): mapboxgl.Map;
+  getSource(sourceid: string): mapboxgl.GeoJSONSource | any;
+  clearSource(id: string): mapboxgl.Map;
+
+  addLayer(data: mapboxgl.AnyLayer): mapboxgl.Map;
+  getLayer(layerid: string): mapboxgl.AnyLayer;
+  clearLayer(id: string): mapboxgl.Map;
+
+  addMarker(marker: mapboxgl.Marker): mapboxgl.Marker;
+  removeMarker(marker: mapboxgl.Marker): mapboxgl.Marker;
+}
