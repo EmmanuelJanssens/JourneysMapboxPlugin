@@ -14,11 +14,16 @@ npx cap sync
 <docgen-index>
 
 * [`loadMap(...)`](#loadmap)
-* [`clearMap(...)`](#clearmap)
-* [`getSource(...)`](#getsource)
 * [`createMarker(...)`](#createmarker)
 * [`addSource(...)`](#addsource)
+* [`addJourneysExperiencesLayer(...)`](#addjourneysexperienceslayer)
+* [`addJourneyListLayer(...)`](#addjourneylistlayer)
+* [`addPoiListLayer(...)`](#addpoilistlayer)
 * [`clearSource(...)`](#clearsource)
+* [`clearMap(...)`](#clearmap)
+* [`removeMarker(...)`](#removemarker)
+* [`addStopPoint(...)`](#addstoppoint)
+* [`getJourneysStartEnd()`](#getjourneysstartend)
 * [`getMap()`](#getmap)
 * [Interfaces](#interfaces)
 * [Type Aliases](#type-aliases)
@@ -39,34 +44,6 @@ loadMap(accessToken: string, apiKey: string, container: string) => void
 | **`accessToken`** | <code>string</code> |
 | **`apiKey`**      | <code>string</code> |
 | **`container`**   | <code>string</code> |
-
---------------------
-
-
-### clearMap(...)
-
-```typescript
-clearMap(resetZoom: boolean) => void
-```
-
-| Param           | Type                 |
-| --------------- | -------------------- |
-| **`resetZoom`** | <code>boolean</code> |
-
---------------------
-
-
-### getSource(...)
-
-```typescript
-getSource(id: string) => GeoJSONSource
-```
-
-| Param    | Type                |
-| -------- | ------------------- |
-| **`id`** | <code>string</code> |
-
-**Returns:** <code>GeoJSONSource</code>
 
 --------------------
 
@@ -93,7 +70,7 @@ createMarker(imageUrl: string, lng: number, lat: number, bgSize: string, size: s
 ### addSource(...)
 
 ```typescript
-addSource(id: string, data?: import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").FeatureCollection<import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Geometry, import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").GeoJsonProperties> | import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Feature<import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Geometry, import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").GeoJsonProperties> | undefined, journey?: any) => void
+addSource(id: string, data?: import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").FeatureCollection<import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Geometry, import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").GeoJsonProperties> | import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Feature<import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Geometry, import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").GeoJsonProperties> | undefined, journey?: any, poi?: any) => void
 ```
 
 | Param         | Type                                                                                                                                                                                                                    |
@@ -101,6 +78,46 @@ addSource(id: string, data?: import("E:/OneDrive/Documents/Journeys project fold
 | **`id`**      | <code>string</code>                                                                                                                                                                                                     |
 | **`data`**    | <code><a href="#featurecollection">FeatureCollection</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt; \| <a href="#feature">Feature</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
 | **`journey`** | <code>any</code>                                                                                                                                                                                                        |
+| **`poi`**     | <code>any</code>                                                                                                                                                                                                        |
+
+--------------------
+
+
+### addJourneysExperiencesLayer(...)
+
+```typescript
+addJourneysExperiencesLayer(data: GeoJSON.FeatureCollection) => void
+```
+
+| Param      | Type                                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **`data`** | <code><a href="#featurecollection">FeatureCollection</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
+
+--------------------
+
+
+### addJourneyListLayer(...)
+
+```typescript
+addJourneyListLayer(data: GeoJSON.FeatureCollection) => void
+```
+
+| Param      | Type                                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **`data`** | <code><a href="#featurecollection">FeatureCollection</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
+
+--------------------
+
+
+### addPoiListLayer(...)
+
+```typescript
+addPoiListLayer(data: GeoJSON.FeatureCollection) => void
+```
+
+| Param      | Type                                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **`data`** | <code><a href="#featurecollection">FeatureCollection</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
 
 --------------------
 
@@ -108,14 +125,62 @@ addSource(id: string, data?: import("E:/OneDrive/Documents/Journeys project fold
 ### clearSource(...)
 
 ```typescript
-clearSource(id: string) => mapboxgl.Map
+clearSource(id: string) => void
 ```
 
 | Param    | Type                |
 | -------- | ------------------- |
 | **`id`** | <code>string</code> |
 
-**Returns:** <code>Map</code>
+--------------------
+
+
+### clearMap(...)
+
+```typescript
+clearMap(resetZoom: boolean) => void
+```
+
+| Param           | Type                 |
+| --------------- | -------------------- |
+| **`resetZoom`** | <code>boolean</code> |
+
+--------------------
+
+
+### removeMarker(...)
+
+```typescript
+removeMarker(marker: mapboxgl.Marker) => void
+```
+
+| Param        | Type                |
+| ------------ | ------------------- |
+| **`marker`** | <code>Marker</code> |
+
+--------------------
+
+
+### addStopPoint(...)
+
+```typescript
+addStopPoint(coordinates: number[][]) => void
+```
+
+| Param             | Type                    |
+| ----------------- | ----------------------- |
+| **`coordinates`** | <code>number[][]</code> |
+
+--------------------
+
+
+### getJourneysStartEnd()
+
+```typescript
+getJourneysStartEnd() => mapboxgl.Marker[]
+```
+
+**Returns:** <code>Marker[]</code>
 
 --------------------
 
