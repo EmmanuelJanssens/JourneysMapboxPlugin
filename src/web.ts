@@ -2,12 +2,14 @@ import { WebPlugin } from '@capacitor/core';
 
 import mapboxgl from 'mapbox-gl';
 
-import type { JourneysMapPlugin } from './definitions';
+import type { JourneyMapCapacitorPlugin } from './definitions';
 
-export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
+export class JourneysMapWeb
+  extends WebPlugin
+  implements JourneyMapCapacitorPlugin
+{
   constructor() {
     super();
-    console.log('Construct');
   }
 
   MapLayer = {
@@ -39,7 +41,7 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
     this.map = new mapboxgl.Map({
       container: container,
       style: `https://api.maptiler.com/maps/voyager/style.json?key=${apiKey}`,
-      zoom: 3,
+      zoom: 6,
       center: [30, 50],
       projection: {
         name: 'globe',
@@ -70,7 +72,9 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
       .addTo(this.map!);
   }
 
-  addJourneysExperiencesLayer(data: GeoJSON.FeatureCollection): void {
+  addJourneysExperiencesLayer(
+    data: GeoJSON.FeatureCollection,
+  ): mapboxgl.Map | undefined {
     this.clearMap();
     if (this.map) {
       const source = this.map.getSource(
@@ -86,21 +90,6 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
         });
         this.existingSources.push(this.MapLayer.journey_experiences);
       }
-
-      this.map.addLayer({
-        id: this.MapLayer.journey_experiences + '_layer',
-        type: 'circle',
-        source: this.MapLayer.journey_experiences,
-        paint: {
-          'circle-color': '#FFBA93',
-          'circle-radius': 6,
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
-        },
-        filter: ['==', '$type', 'Point'],
-      });
-      this.existingLayers.push(this.MapLayer.journey_experiences + '_layer');
-
       this.map.addLayer({
         id: this.MapLayer.journey_experiences + '_route',
         type: 'line',
@@ -136,6 +125,20 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
       this.existingLayers.push(
         this.MapLayer.journey_experiences + '_route_label',
       );
+
+      this.map.addLayer({
+        id: this.MapLayer.journey_experiences + '_layer',
+        type: 'circle',
+        source: this.MapLayer.journey_experiences,
+        paint: {
+          'circle-color': '#FFBA93',
+          'circle-radius': 6,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff',
+        },
+        filter: ['==', '$type', 'Point'],
+      });
+      this.existingLayers.push(this.MapLayer.journey_experiences + '_layer');
 
       const lines = data.features.filter(
         feature => feature.geometry.type == 'LineString',
@@ -177,9 +180,12 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
         },
       );
     }
+    return this.map;
   }
 
-  addJourneyListLayer(data: GeoJSON.FeatureCollection): void {
+  addJourneyListLayer(
+    data: GeoJSON.FeatureCollection,
+  ): mapboxgl.Map | undefined {
     this.clearMap();
     if (this.map) {
       const source = this.map.getSource(
@@ -195,20 +201,6 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
         });
         this.existingSources.push(this.MapLayer.journey_list);
       }
-
-      this.map.addLayer({
-        id: this.MapLayer.journey_list,
-        type: 'circle',
-        source: this.MapLayer.journey_list,
-        paint: {
-          'circle-color': '#FFBA93',
-          'circle-radius': 6,
-          'circle-stroke-width': 1,
-          'circle-stroke-color': '#fff',
-        },
-        filter: ['==', '$type', 'Point'],
-      });
-      this.existingLayers.push(this.MapLayer.journey_list);
 
       this.map.addLayer({
         id: this.MapLayer.journey_list + '_connections',
@@ -227,6 +219,20 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
       this.existingLayers.push(this.MapLayer.journey_list + '_connections');
 
       this.map.addLayer({
+        id: this.MapLayer.journey_list,
+        type: 'circle',
+        source: this.MapLayer.journey_list,
+        paint: {
+          'circle-color': '#FFBA93',
+          'circle-radius': 6,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff',
+        },
+        filter: ['==', '$type', 'Point'],
+      });
+      this.existingLayers.push(this.MapLayer.journey_list);
+
+      this.map.addLayer({
         id: this.MapLayer.journey_list + '_labels',
         type: 'symbol',
         source: this.MapLayer.journey_list,
@@ -243,226 +249,49 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
       });
       this.existingLayers.push(this.MapLayer.journey_list + '_labels');
     }
-  }
-  addPoiListLayer(data: GeoJSON.FeatureCollection): void {
-    console.log(data);
+    return this.map;
   }
 
-  async addSource(
-    id: string,
-    data?: GeoJSON.FeatureCollection | GeoJSON.Feature,
-    journey?: any,
-  ) {
+  addPoiListLayer(data: GeoJSON.FeatureCollection): mapboxgl.Map | undefined {
+    this.clearMap();
     if (this.map) {
-      switch (id) {
-        case this.MapLayer.journey_experiences:
-          if (journey) {
-            this.JourneysExperienceMarker.push(
-              this.createMarker(
-                'src/assets/icon/flag-start.svg',
-                journey.start?.longitude!,
-                journey.start?.latitude!,
-                'cover',
-                '20px',
-              ),
-            );
-            this.JourneysExperienceMarker.push(
-              this.createMarker(
-                'src/assets/icon/flag-end.svg',
-                journey.end?.longitude!,
-                journey.end?.latitude!,
-                'cover',
-                '20px',
-              ),
-            );
-            this.map.addSource(this.MapLayer.journey_route, {
-              type: 'geojson',
-              data: data,
-            });
-            this.map.addLayer({
-              id: this.MapLayer.journey_route,
-              type: 'line',
-              source: this.MapLayer.journey_route,
-              layout: {
-                'line-join': 'round',
-                'line-cap': 'round',
-              },
-              paint: {
-                'line-color': '#555',
-                'line-width': 2,
-              },
-            });
-            this.map.addLayer({
-              id: this.MapLayer.journey_route + '_symbol',
-              type: 'symbol',
-              source: this.MapLayer.journey_route,
-              layout: {
-                'text-justify': 'center',
-                'symbol-placement': 'line-center',
-                'text-font': ['Open Sans Regular'],
-                'text-field': '{title}',
-                'text-size': 16,
-              },
-              paint: {
-                'text-translate': [0, -10],
-              },
-            });
-          }
-          if (data) {
-            (data as GeoJSON.FeatureCollection).features.forEach(exp => {
-              this.existingMarkers.set(
-                exp.id as string,
-                this.createMarker(
-                  exp.properties!.images.length > 0
-                    ? exp.properties!.images[0]
-                    : 'https://firebasestorage.googleapis.com/v0/b/journeys-v2/o/images%2Fplaceholder.png?alt=media&token=c921b603-8028-42d4-a7a3-7b186f427c98',
-                  (exp.geometry as GeoJSON.Point).coordinates[0],
-                  (exp.geometry as GeoJSON.Point).coordinates[1],
-                  '100%',
-                  '30px',
-                ),
-              );
-            });
-          }
-          break;
-        case this.MapLayer.journey_list:
-          this.map.addSource(id, {
-            type: 'geojson',
-            data: data,
-          });
-
-          this.map.addLayer({
-            id: id,
-            type: 'circle',
-            source: id,
-            paint: {
-              'circle-color': '#FFBA93',
-              'circle-radius': 6,
-              'circle-stroke-width': 1,
-              'circle-stroke-color': '#fff',
-            },
-          });
-
-          break;
-        case this.MapLayer.journey_route:
-          this.map.addSource(this.MapLayer.journey_route, {
-            type: 'geojson',
-            data: data,
-          });
-          this.map.addLayer({
-            id: this.MapLayer.journey_route,
-            type: 'line',
-            source: this.MapLayer.journey_route,
-            layout: {
-              'line-join': 'round',
-              'line-cap': 'round',
-            },
-            paint: {
-              'line-color': '#555',
-              'line-width': 2,
-            },
-          });
-          this.map.addLayer({
-            id: this.MapLayer.journey_route + '_symbol',
-            type: 'symbol',
-            source: this.MapLayer.journey_route,
-            layout: {
-              'text-justify': 'center',
-              'symbol-placement': 'line-center',
-              'text-font': ['Open Sans Regular'],
-              'text-field': '{title}',
-              'text-size': 16,
-            },
-            paint: {
-              'text-translate': [0, -10],
-            },
-          });
-          break;
-        case this.MapLayer.poi_list:
-          this.map?.addSource(this.MapLayer.poi_list, {
-            type: 'geojson',
-            data: data,
-            cluster: true,
-            clusterMaxZoom: 14,
-            clusterRadius: 50,
-          });
-          this.map.addLayer({
-            id: this.MapLayer.poi_cluster,
-            type: 'circle',
-            source: this.MapLayer.poi_list,
-            filter: ['has', 'point_count'],
-            paint: {
-              'circle-color': [
-                'step',
-                ['get', 'point_count'],
-                '#51bbd6',
-                100,
-                '#f1f075',
-                750,
-                '#f28cb1',
-              ],
-              'circle-radius': [
-                'step',
-                ['get', 'point_count'],
-                20,
-                100,
-                30,
-                750,
-                40,
-              ],
-            },
-          });
-          this.map.addLayer({
-            id: this.MapLayer.poi_cluster + '_count',
-            type: 'symbol',
-            source: this.MapLayer.poi_list,
-            filter: ['has', 'point_count'],
-            layout: {
-              'text-field': '{point_count_abbreviated}',
-              'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-              'text-size': 12,
-            },
-          });
-          this.map.addLayer({
-            id: this.MapLayer.poi_cluster + '_unclustered',
-            type: 'circle',
-            source: this.MapLayer.poi_list,
-            filter: ['!', ['has', 'point_count']],
-            paint: {
-              'circle-color': '#11b4da',
-              'circle-radius': 6,
-              'circle-stroke-width': 1,
-              'circle-stroke-color': '#fff',
-            },
-          });
-          const num = [
-            [journey.start.longitude, journey.start.latitude],
-            [journey.end.longitude, journey.end.latitude],
-          ];
-          this.addStopPoint(num);
-          break;
+      this.map.off('click', () => {});
+      const source = this.map.getSource(
+        this.MapLayer.poi_list,
+      ) as mapboxgl.GeoJSONSource;
+      if (source) {
+        source.setData(data);
+      } else {
+        this.map?.addSource(this.MapLayer.poi_list, {
+          type: 'geojson',
+          data: data,
+          cluster: true,
+          clusterMaxZoom: 14,
+          clusterRadius: 50,
+        });
+        this.existingSources.push(this.MapLayer.poi_list);
       }
-    }
-  }
-  addStopPoint(coordinates: number[][]) {
-    if (this.map) {
-      this.clearSource(this.MapLayer.journey_route);
-      this.map.addSource(this.MapLayer.journey_route, {
-        type: 'geojson',
-        data: {
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'LineString',
-            coordinates: coordinates,
-          },
-        },
-      });
+      const lines = data.features.filter(
+        feature => feature.geometry.type == 'LineString',
+      );
+
+      const route_source = this.map.getSource(
+        this.MapLayer.poi_list + '_route',
+      ) as mapboxgl.GeoJSONSource;
+      if (route_source) {
+        route_source.setData(lines[0]);
+      } else {
+        this.map?.addSource(this.MapLayer.poi_list + '_route', {
+          type: 'geojson',
+          data: lines[0],
+        });
+        this.existingSources.push(this.MapLayer.poi_list + '_route');
+      }
 
       this.map.addLayer({
-        id: this.MapLayer.journey_route,
+        id: this.MapLayer.poi_list + '_route',
         type: 'line',
-        source: this.MapLayer.journey_route,
+        source: this.MapLayer.poi_list + '_route',
         layout: {
           'line-join': 'round',
           'line-cap': 'round',
@@ -471,21 +300,132 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
           'line-color': '#555',
           'line-width': 2,
         },
+        filter: ['==', '$type', 'LineString'],
       });
+      this.existingLayers.push(this.MapLayer.poi_list + '_route');
+
+      this.map.addLayer({
+        id: this.MapLayer.poi_list + '_cluster',
+        type: 'circle',
+        source: this.MapLayer.poi_list,
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#51bbd6',
+            100,
+            '#f1f075',
+            750,
+            '#f28cb1',
+          ],
+          'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            20,
+            100,
+            30,
+            750,
+            40,
+          ],
+        },
+      });
+      this.existingLayers.push(this.MapLayer.poi_list + '_cluster');
+
+      this.map.addLayer({
+        id: this.MapLayer.poi_list + '_cluster_count',
+        type: 'symbol',
+        source: this.MapLayer.poi_list,
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': '{point_count_abbreviated}',
+          'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+          'text-size': 12,
+        },
+      });
+      this.existingLayers.push(this.MapLayer.poi_list + '_cluster_count');
+
+      this.map.addLayer({
+        id: this.MapLayer.poi_list + '_unclustered',
+        type: 'circle',
+        source: this.MapLayer.poi_list,
+        filter: ['all', ['!has', 'point_count'], ['==', '$type', 'Point']],
+        paint: {
+          'circle-color': '#11b4da',
+          'circle-radius': 6,
+          'circle-stroke-width': 1,
+          'circle-stroke-color': '#fff',
+        },
+      });
+      this.existingLayers.push(this.MapLayer.poi_list + '_unclustered');
+
+      this.existingMarkers.set(
+        'journey_start',
+        this.createMarker(
+          'src/assets/icon/flag-start.svg',
+          lines[0].properties!.start.longitude,
+          lines[0].properties!.start.latitude,
+          'cover',
+          '20px',
+        ),
+      );
+      this.existingMarkers.set(
+        'journey_end',
+        this.createMarker(
+          'src/assets/icon/flag-end.svg',
+          lines[0].properties!.end.longitude,
+          lines[0].properties!.end.latitude,
+          'cover',
+          '20px',
+        ),
+      );
+      this.map.fitBounds(
+        [
+          [
+            lines[0].properties!.start.longitude,
+            lines[0].properties!.start.latitude,
+          ],
+          [
+            lines[0].properties!.end.longitude,
+            lines[0].properties!.end.latitude,
+          ],
+        ],
+        {
+          padding: 100,
+        },
+      );
+    }
+
+    return this.map;
+  }
+  addStopPoint(data: GeoJSON.Feature) {
+    if (this.map) {
+      const route = this.map.getSource(
+        this.MapLayer.poi_list + '_route',
+      ) as mapboxgl.GeoJSONSource;
+      if (route) {
+        route.setData(data);
+      }
     }
   }
   clearMap() {
     if (this.map) {
       this.existingLayers.forEach(layer_id => this.clearLayer(layer_id));
       this.existingSources.forEach(source_id => this.clearSource(source_id));
-      this.existingMarkers.forEach((_, k) => console.log(k));
       this.existingMarkers.forEach((val, _) => val.remove());
+
+      this.existingLayers.forEach((_, idx, obj) => obj.splice(idx, 1));
+      this.existingSources.forEach((_, idx, obj) => obj.splice(idx, 1));
+      this.existingMarkers.forEach((_, key, map) => map.delete(key));
     }
   }
 
   clearSource(id: string) {
     if (this.map?.getSource(id)) this.map.removeSource(id);
-    return this.map!;
+  }
+
+  getmarkerbyId(id: string): mapboxgl.Marker | undefined {
+    return this.existingMarkers.get(id);
   }
   getJourneysStartEnd(): mapboxgl.Marker[] {
     return this.JourneysStartEndMarker;
@@ -495,7 +435,6 @@ export class JourneysMapWeb extends WebPlugin implements JourneysMapPlugin {
     marker.remove();
   }
   clearLayer(id: string) {
-    if (this.map!.getLayer(id)) return this.map!.removeLayer(id);
-    else return this.map!;
+    if (this.map?.getLayer(id)) this.map.removeLayer(id);
   }
 }

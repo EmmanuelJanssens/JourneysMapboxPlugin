@@ -1,6 +1,6 @@
-import mapboxgl, { GeoJSONSource } from 'mapbox-gl';
+import mapboxgl from 'mapbox-gl';
 
-export interface JourneysMapPlugin {
+export interface JourneyMapCapacitorPlugin {
   loadMap(accessToken: string, apiKey: string, container: string): void;
   createMarker(
     imageUrl: string,
@@ -9,22 +9,23 @@ export interface JourneysMapPlugin {
     bgSize: string,
     size: string,
   ): mapboxgl.Marker;
-  addSource(
-    id: string,
-    data?: GeoJSON.FeatureCollection | GeoJSON.Feature,
-    journey?: any,
-    poi?: any,
-  ): void;
 
-  addJourneysExperiencesLayer(data: GeoJSON.FeatureCollection): void;
-  addJourneyListLayer(data: GeoJSON.FeatureCollection): void;
-  addPoiListLayer(data: GeoJSON.FeatureCollection): void;
+  addJourneysExperiencesLayer(
+    data: GeoJSON.FeatureCollection,
+  ): mapboxgl.Map | undefined;
+  addJourneyListLayer(
+    data: GeoJSON.FeatureCollection,
+  ): mapboxgl.Map | undefined;
+  addPoiListLayer(data: GeoJSON.FeatureCollection): mapboxgl.Map | undefined;
 
   clearSource(id: string): void;
+  clearLayer(id: string): void;
+
   clearMap(resetZoom: boolean): void;
   removeMarker(marker: mapboxgl.Marker): void;
 
-  addStopPoint(coordinates: number[][]): void;
+  getmarkerbyId(id: string): mapboxgl.Marker | undefined;
+  addStopPoint(data: GeoJSON.Feature): void;
   getJourneysStartEnd(): mapboxgl.Marker[];
   getMap(): mapboxgl.Map | undefined;
 }

@@ -15,13 +15,14 @@ npx cap sync
 
 * [`loadMap(...)`](#loadmap)
 * [`createMarker(...)`](#createmarker)
-* [`addSource(...)`](#addsource)
 * [`addJourneysExperiencesLayer(...)`](#addjourneysexperienceslayer)
 * [`addJourneyListLayer(...)`](#addjourneylistlayer)
 * [`addPoiListLayer(...)`](#addpoilistlayer)
 * [`clearSource(...)`](#clearsource)
+* [`clearLayer(...)`](#clearlayer)
 * [`clearMap(...)`](#clearmap)
 * [`removeMarker(...)`](#removemarker)
+* [`getmarkerbyId(...)`](#getmarkerbyid)
 * [`addStopPoint(...)`](#addstoppoint)
 * [`getJourneysStartEnd()`](#getjourneysstartend)
 * [`getMap()`](#getmap)
@@ -67,31 +68,17 @@ createMarker(imageUrl: string, lng: number, lat: number, bgSize: string, size: s
 --------------------
 
 
-### addSource(...)
-
-```typescript
-addSource(id: string, data?: import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").FeatureCollection<import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Geometry, import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").GeoJsonProperties> | import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Feature<import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").Geometry, import("E:/OneDrive/Documents/Journeys project folder/frontend/node_modules/@types/geojson/index").GeoJsonProperties> | undefined, journey?: any, poi?: any) => void
-```
-
-| Param         | Type                                                                                                                                                                                                                    |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`id`**      | <code>string</code>                                                                                                                                                                                                     |
-| **`data`**    | <code><a href="#featurecollection">FeatureCollection</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt; \| <a href="#feature">Feature</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
-| **`journey`** | <code>any</code>                                                                                                                                                                                                        |
-| **`poi`**     | <code>any</code>                                                                                                                                                                                                        |
-
---------------------
-
-
 ### addJourneysExperiencesLayer(...)
 
 ```typescript
-addJourneysExperiencesLayer(data: GeoJSON.FeatureCollection) => void
+addJourneysExperiencesLayer(data: GeoJSON.FeatureCollection) => mapboxgl.Map | undefined
 ```
 
 | Param      | Type                                                                                                                       |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
 | **`data`** | <code><a href="#featurecollection">FeatureCollection</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
+
+**Returns:** <code>Map</code>
 
 --------------------
 
@@ -99,12 +86,14 @@ addJourneysExperiencesLayer(data: GeoJSON.FeatureCollection) => void
 ### addJourneyListLayer(...)
 
 ```typescript
-addJourneyListLayer(data: GeoJSON.FeatureCollection) => void
+addJourneyListLayer(data: GeoJSON.FeatureCollection) => mapboxgl.Map | undefined
 ```
 
 | Param      | Type                                                                                                                       |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
 | **`data`** | <code><a href="#featurecollection">FeatureCollection</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
+
+**Returns:** <code>Map</code>
 
 --------------------
 
@@ -112,12 +101,14 @@ addJourneyListLayer(data: GeoJSON.FeatureCollection) => void
 ### addPoiListLayer(...)
 
 ```typescript
-addPoiListLayer(data: GeoJSON.FeatureCollection) => void
+addPoiListLayer(data: GeoJSON.FeatureCollection) => mapboxgl.Map | undefined
 ```
 
 | Param      | Type                                                                                                                       |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
 | **`data`** | <code><a href="#featurecollection">FeatureCollection</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
+
+**Returns:** <code>Map</code>
 
 --------------------
 
@@ -126,6 +117,19 @@ addPoiListLayer(data: GeoJSON.FeatureCollection) => void
 
 ```typescript
 clearSource(id: string) => void
+```
+
+| Param    | Type                |
+| -------- | ------------------- |
+| **`id`** | <code>string</code> |
+
+--------------------
+
+
+### clearLayer(...)
+
+```typescript
+clearLayer(id: string) => void
 ```
 
 | Param    | Type                |
@@ -161,15 +165,30 @@ removeMarker(marker: mapboxgl.Marker) => void
 --------------------
 
 
+### getmarkerbyId(...)
+
+```typescript
+getmarkerbyId(id: string) => mapboxgl.Marker | undefined
+```
+
+| Param    | Type                |
+| -------- | ------------------- |
+| **`id`** | <code>string</code> |
+
+**Returns:** <code>Marker</code>
+
+--------------------
+
+
 ### addStopPoint(...)
 
 ```typescript
-addStopPoint(coordinates: number[][]) => void
+addStopPoint(data: GeoJSON.Feature) => void
 ```
 
-| Param             | Type                    |
-| ----------------- | ----------------------- |
-| **`coordinates`** | <code>number[][]</code> |
+| Param      | Type                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| **`data`** | <code><a href="#feature">Feature</a>&lt;<a href="#geometry">Geometry</a>, GeoJsonProperties&gt;</code> |
 
 --------------------
 

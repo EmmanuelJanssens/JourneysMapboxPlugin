@@ -1,9 +1,12 @@
 import { registerPlugin } from '@capacitor/core';
 
-import type { JourneysMapPlugin } from './definitions';
+import type { JourneyMapCapacitorPlugin } from './definitions';
 
-const JourneysMap = registerPlugin<JourneysMapPlugin>('JourneysMap', {
-  web: () => import('./web').then(m => new m.JourneysMapWeb()),
-});
+const JourneyMapCapacitor = registerPlugin<JourneyMapCapacitorPlugin>(
+  'JourneyMapCapacitor',
+  {
+    web: () => import('./web').then(m => new m.JourneysMapWeb()),
+  },
+);
 export * from './definitions';
-export { JourneysMap };
+export { JourneyMapCapacitor };
