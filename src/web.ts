@@ -164,21 +164,16 @@ export class JourneysMapWeb
           '20px',
         ),
       );
-      this.map.fitBounds(
-        [
-          [
-            lines[0].properties!.start.longitude,
-            lines[0].properties!.start.latitude,
-          ],
-          [
-            lines[0].properties!.end.longitude,
-            lines[0].properties!.end.latitude,
-          ],
-        ],
-        {
-          padding: 30,
-        },
-      );
+
+      var bounds = new mapboxgl.LngLatBounds();
+
+      bounds.extend(this.existingMarkers.get('start')?.getLngLat()!);
+      bounds.extend(this.existingMarkers.get('end')?.getLngLat()!);
+
+      this.map.fitBounds(bounds, {
+        padding: 100,
+        linear: true,
+      });
     }
     return this.map;
   }
@@ -382,12 +377,12 @@ export class JourneysMapWeb
       this.map.fitBounds(
         [
           [
-            lines[0].properties!.start.longitude,
-            lines[0].properties!.start.latitude,
-          ],
-          [
             lines[0].properties!.end.longitude,
             lines[0].properties!.end.latitude,
+          ],
+          [
+            lines[0].properties!.start.longitude,
+            lines[0].properties!.start.latitude,
           ],
         ],
         {
