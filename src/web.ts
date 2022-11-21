@@ -147,7 +147,7 @@ export class JourneysMapWeb
       this.existingMarkers.set(
         'start',
         this.createMarker(
-          'src/assets/icon/flag-start.svg',
+          'assets/icon/flag-start.svg',
           lines[0].properties!.start.longitude,
           lines[0].properties!.start.latitude,
           'cover',
@@ -157,7 +157,7 @@ export class JourneysMapWeb
       this.existingMarkers.set(
         'end',
         this.createMarker(
-          'src/assets/icon/flag-end.svg',
+          'assets/icon/flag-end.svg',
           lines[0].properties!.end.longitude,
           lines[0].properties!.end.latitude,
           'cover',
@@ -171,8 +171,7 @@ export class JourneysMapWeb
       bounds.extend(this.existingMarkers.get('end')?.getLngLat()!);
 
       this.map.fitBounds(bounds, {
-        padding: 100,
-        linear: true,
+        padding: 200,
       });
     }
     return this.map;
@@ -269,7 +268,6 @@ export class JourneysMapWeb
       const lines = data.features.filter(
         feature => feature.geometry.type == 'LineString',
       );
-
       const route_source = this.map.getSource(
         this.MapLayer.poi_list + '_route',
       ) as mapboxgl.GeoJSONSource;
@@ -386,7 +384,7 @@ export class JourneysMapWeb
           ],
         ],
         {
-          padding: 100,
+          padding: 200,
         },
       );
     }
