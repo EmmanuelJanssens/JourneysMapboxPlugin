@@ -1,6 +1,6 @@
 import { WebPlugin } from '@capacitor/core';
 
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { LngLat } from 'mapbox-gl';
 
 import type { JourneyMapCapacitorPlugin } from './definitions';
 
@@ -32,7 +32,7 @@ export class JourneysMapWeb
   getMap(): mapboxgl.Map | undefined {
     return this.map;
   }
-  loadMap(accessToken: string, container: string) {
+  loadMap(accessToken: string, container: string, center: LngLat) {
     mapboxgl.accessToken = accessToken;
     if (this.map) {
       this.map.remove();
@@ -42,10 +42,11 @@ export class JourneysMapWeb
       container: container,
       style: `mapbox://styles/mapbox/outdoors-v12`,
       zoom: 6,
-      center: [30, 50],
       projection: {
         name: 'globe',
       },
+    }).flyTo({
+      center: [center.lng, center.lat],
     });
   }
 

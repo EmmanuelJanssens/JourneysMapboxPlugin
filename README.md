@@ -37,13 +37,14 @@ npx cap sync
 ### loadMap(...)
 
 ```typescript
-loadMap(accessToken: string, container: string) => void
+loadMap(accessToken: string, container: string, center: mapboxgl.LngLatLike) => void
 ```
 
-| Param             | Type                |
-| ----------------- | ------------------- |
-| **`accessToken`** | <code>string</code> |
-| **`container`**   | <code>string</code> |
+| Param             | Type                    |
+| ----------------- | ----------------------- |
+| **`accessToken`** | <code>string</code>     |
+| **`container`**   | <code>string</code>     |
+| **`center`**      | <code>LngLatLike</code> |
 
 --------------------
 
