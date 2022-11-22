@@ -73,5 +73,8 @@
     "android": {
       "src": "android"
     }
+  },
+  "dependencies": {
+    "mapbox-gl": "^2.11.0"
   }
 }

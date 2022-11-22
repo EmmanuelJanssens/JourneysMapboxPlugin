@@ -1,7 +1,7 @@
 import mapboxgl from 'mapbox-gl';
 
 export interface JourneyMapCapacitorPlugin {
-  loadMap(accessToken: string, apiKey: string, container: string): void;
+  loadMap(accessToken: string, container: string): void;
   createMarker(
     imageUrl: string,
     lng: number,

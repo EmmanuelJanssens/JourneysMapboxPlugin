@@ -37,13 +37,12 @@ npx cap sync
 ### loadMap(...)
 
 ```typescript
-loadMap(accessToken: string, apiKey: string, container: string) => void
+loadMap(accessToken: string, container: string) => void
 ```
 
 | Param             | Type                |
 | ----------------- | ------------------- |
 | **`accessToken`** | <code>string</code> |
-| **`apiKey`**      | <code>string</code> |
 | **`container`**   | <code>string</code> |
 
 --------------------

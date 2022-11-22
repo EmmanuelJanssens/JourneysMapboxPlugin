@@ -32,7 +32,7 @@ export class JourneysMapWeb
   getMap(): mapboxgl.Map | undefined {
     return this.map;
   }
-  loadMap(accessToken: string, apiKey: string, container: string) {
+  loadMap(accessToken: string, container: string) {
     mapboxgl.accessToken = accessToken;
     if (this.map) {
       this.map.remove();
@@ -40,7 +40,7 @@ export class JourneysMapWeb
     }
     this.map = new mapboxgl.Map({
       container: container,
-      style: `https://api.maptiler.com/maps/voyager/style.json?key=${apiKey}`,
+      style: `mapbox://styles/mapbox/outdoors-v12`,
       zoom: 6,
       center: [30, 50],
       projection: {
@@ -355,7 +355,7 @@ export class JourneysMapWeb
       this.existingMarkers.set(
         'journey_start',
         this.createMarker(
-          'src/assets/icon/flag-start.svg',
+          'assets/icon/flag-start.svg',
           lines[0].properties!.start.longitude,
           lines[0].properties!.start.latitude,
           'cover',
@@ -365,7 +365,7 @@ export class JourneysMapWeb
       this.existingMarkers.set(
         'journey_end',
         this.createMarker(
-          'src/assets/icon/flag-end.svg',
+          'assets/icon/flag-end.svg',
           lines[0].properties!.end.longitude,
           lines[0].properties!.end.latitude,
           'cover',
